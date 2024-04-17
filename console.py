@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 Module for console
 """
@@ -93,9 +93,9 @@ class HBNBCommand(cmd.Cmd):
                 return
 
             kwargs = {}
-            commands = arg.split(" ")
-            for i in range(1, len(commands)):
-                
+            commands = arg.split(" ")[1:]
+            for i in range(len(commands)):
+
                 key = commands[i].split("=")[0]
                 value = commands[i].split("=")[1]
                 #key, value = tuple(commands[i].split("="))
@@ -112,6 +112,8 @@ class HBNBCommand(cmd.Cmd):
                 new_instance = eval(class_name)()
             else:
                 new_instance = eval(class_name)(**kwargs)
+                for k, v in kwargs.items():
+                    print("{}: {}".format(k, v))
             storage.new(new_instance)
             print(new_instance.id)
             storage.save()
