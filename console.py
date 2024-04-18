@@ -16,7 +16,6 @@ from models.state import State
 from models.city import City
 
 
-
 def split_curly_braces(e_arg):
     """
     Splits the curly braces for the update method
@@ -24,7 +23,7 @@ def split_curly_braces(e_arg):
     curly_braces = re.search(r"\{(.*?)\}", e_arg)
 
     if curly_braces:
-        id_with_comma = shlex.split(e_arg[:curly_braces.span()[0]])
+        id_with_comma = shlex.split(e_arg[: curly_braces.span()[0]])
         id = [i.strip(",") for i in id_with_comma][0]
 
         str_data = curly_braces.group(1)
@@ -51,10 +50,12 @@ def split_curly_braces(e_arg):
                 return id, attr_name
             return f"{id}", f"{attr_name} {attr_value}"
 
+
 class HBNBCommand(cmd.Cmd):
     """
     HBNBCommand console class
     """
+
     prompt = "(hbnb) "
     valid_classes = ["BaseModel", "User", "Amenity",
                      "Place", "Review", "State", "City"]
@@ -76,7 +77,6 @@ class HBNBCommand(cmd.Cmd):
         Quit command to exit the program.
         """
         return True
-        
 
     def do_create(self, arg):
         """
@@ -98,7 +98,6 @@ class HBNBCommand(cmd.Cmd):
 
                 key = commands[i].split("=")[0]
                 value = commands[i].split("=")[1]
-                #key, value = tuple(commands[i].split("="))
                 if value.startswith('"'):
                     value = value.strip('"').replace("_", " ")
                 else:
@@ -111,12 +110,11 @@ class HBNBCommand(cmd.Cmd):
             if kwargs == {}:
                 new_instance = eval(class_name)()
             else:
-                new_instance = eval(class_name)(**kwargs)
                 for k, v in kwargs.items():
-                    print("{}: {}".format(k, v))
-            storage.new(new_instance)
-            print(new_instance.id)
-            storage.save()
+                    new_instance = eval(class_name)({k: v})
+                    storage.new(new_instance)
+                    print(new_instance.id)
+                storage.save()
         except ValueError:
             print(ValueError)
             return
@@ -182,9 +180,9 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             for key, value in objects.items():
-                if key.split('.')[0] == commands[0]:
+                if key.split(".")[0] == commands[0]:
                     print(str(value))
-        
+
     def do_count(self, arg):
         """
         Counts and retrieves the number of instances of a class
@@ -273,28 +271,28 @@ class HBNBCommand(cmd.Cmd):
                     setattr(obj, attr_name, attr_value)
 
                 obj.save()
-    
+
     def default(self, arg):
         """
         Default behavior for cmd module when input is invalid
         """
-        arg_list = arg.split('.')
+        arg_list = arg.split(".")
 
         cls_nm = arg_list[0]  # incoming class name
 
-        command = arg_list[1].split('(')
+        command = arg_list[1].split("(")
 
         cmd_met = command[0]  # incoming command method
 
-        e_arg = command[1].split(')')[0]  # extra arguments
+        e_arg = command[1].split(")")[0]  # extra arguments
 
         method_dict = {
-                'all': self.do_all,
-                'show': self.do_show,
-                'destroy': self.do_destroy,
-                'update': self.do_update,
-                'count': self.do_count
-                }
+            "all": self.do_all,
+            "show": self.do_show,
+            "destroy": self.do_destroy,
+            "update": self.do_update,
+            "count": self.do_count,
+        }
 
         if cmd_met in method_dict.keys():
             if cmd_met != "update":
@@ -315,7 +313,7 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("*** Unknown syntax: {}".format(arg))
             return False
-    
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     HBNBCommand().cmdloop()
